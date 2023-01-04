@@ -12,6 +12,7 @@ builder.Services.AddDbContext<HotelListDbContext>(options =>
 });
 
 
+//Controllers and Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
