@@ -1,3 +1,4 @@
+using HotelAPI.Configurations;
 using HotelAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -31,6 +32,10 @@ builder.Services.AddCors(options =>
 //Logger
 builder.Host.UseSerilog((ctx, lc) => 
 lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration));
+
+
+//AutoMapper
+builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 
 var app = builder.Build();
