@@ -11,6 +11,7 @@ namespace HotelAPI.Configurations
         public MapperConfig()
         {
             //Map both direction
+            //Copies respective field data between 2 objects
             CreateMap<Country, CreateCountryDto>().ReverseMap();   
             CreateMap<Country, GetCountryDto>().ReverseMap();   
             CreateMap<Country, CountryDto>().ReverseMap();   

@@ -14,7 +14,7 @@ namespace HotelAPI.Data
         public DbSet<Country> Countries { get; set; }
 
         
-        //Seed Data Method
+        //Seed Data 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -72,7 +72,7 @@ namespace HotelAPI.Data
                    CountryId = 1
                }
 
-             );
+            );
         }
     }   
 }
