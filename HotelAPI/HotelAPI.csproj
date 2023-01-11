@@ -4,10 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>7b5bb846-4734-4310-9053-95c574dd33fc</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.13" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.12" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.1">
 		  <PrivateAssets>all</PrivateAssets>
@@ -17,7 +20,8 @@
 	  <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 	  <PackageReference Include="Serilog.Expressions" Version="3.4.1" />
 	  <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	  <PackageReference Include="ServiceStack.Client" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
 </Project>

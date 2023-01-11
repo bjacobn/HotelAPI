@@ -1,4 +1,4 @@
-﻿namespace HotelAPI.Repositories
+﻿namespace HotelAPI.Contracts
 {
     public interface IGenericRepository<T> where T : class
     {

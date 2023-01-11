@@ -1,5 +1,5 @@
 ﻿using HotelAPI.Data;
-using HotelAPI.Repositories;
+using HotelAPI.Contracts;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +8,7 @@ namespace HotelAPI.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         private readonly HotelListDbContext _context;
+        
 
         public GenericRepository(HotelListDbContext context)
         {

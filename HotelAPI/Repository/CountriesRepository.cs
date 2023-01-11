@@ -1,5 +1,5 @@
 ﻿using HotelAPI.Data;
-using HotelAPI.Repositories;
+using HotelAPI.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 

@@ -1,6 +1,6 @@
 ﻿using HotelAPI.Data;
 
-namespace HotelAPI.Repositories
+namespace HotelAPI.Contracts
 {
     public interface ICountriesRepository : IGenericRepository<Country>
     {

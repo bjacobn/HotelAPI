@@ -9,7 +9,8 @@ using HotelAPI.Data;
 using HotelAPI.Models.Country;
 using System.Security.Cryptography.Xml;
 using AutoMapper;
-using HotelAPI.Repositories;
+using HotelAPI.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HotelAPI.Controllers
 {
@@ -32,6 +33,7 @@ namespace HotelAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
         {
+            //Get all hotels, map it, return list
             var countries = await _countriesRepository.GetAllAsync();
             var records = _mapper.Map<List<GetCountryDto>>(countries);
             return Ok(records);
@@ -58,6 +60,7 @@ namespace HotelAPI.Controllers
         // PUT: api/Countries/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutCountry(int id, UpdateCountryDto updateCountryDto)
         {
             //No Record found
@@ -105,6 +108,7 @@ namespace HotelAPI.Controllers
         // POST: api/Countries
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Country>> PostCountry(CreateCountryDto createCountryDto)
         {
            
@@ -118,6 +122,7 @@ namespace HotelAPI.Controllers
 
         // DELETE: api/Countries/5
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Administrator")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             var country = await _countriesRepository.GetAsync(id);

@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HotelAPI.Data.Configurations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace HotelAPI.Data
 {
-    public class HotelListDbContext : DbContext
+    public class HotelListDbContext : IdentityDbContext<ApiUser>
     {
         public HotelListDbContext(DbContextOptions options) : base(options)
         {
@@ -20,59 +22,11 @@ namespace HotelAPI.Data
 
             base.OnModelCreating(modelBuilder);
 
-            //Countries
-            modelBuilder.Entity<Country>().HasData(
-                new Country
-                {
-                    Id = 1,
-                    Name = "Jamaica",
-                    ShortName = "JM"
-                },
-               new Country
-               {
-                   Id = 2,
-                   Name = "Bahamas",
-                   ShortName = "BS"
-               },
-               new Country
-               {
-                   Id = 3,
-                   Name = "Cayman Island",
-                   ShortName = "CI"
-               }
 
-              );
-
-
-            //Hotels
-            modelBuilder.Entity<Hotel>().HasData(
-                new Hotel
-                {
-                    Id = 1,
-                    Name = "Sandals Resort",
-                    Address = "Negril",
-                    Rating = 4.5,
-                    CountryId = 1
-
-                },
-               new Hotel
-               {
-                   Id = 2,
-                   Name = "Comfort Suites",
-                   Address = "George Town",
-                   Rating = 4.3,
-                   CountryId = 3
-               },
-               new Hotel
-               {
-                   Id = 3,
-                   Name = "Grand Palldium ",
-                   Address = "Negril",
-                   Rating = 5,
-                   CountryId = 1
-               }
-
-            );
+            //Points to Configuraiton folder
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());        
+            modelBuilder.ApplyConfiguration(new CountryConfiguration());
+            modelBuilder.ApplyConfiguration(new HotelConfiguration());
         }
     }   
 }
