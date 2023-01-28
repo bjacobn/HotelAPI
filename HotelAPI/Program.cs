@@ -1,9 +1,12 @@
 using HotelAPI.Configurations;
 using HotelAPI.Contracts;
 using HotelAPI.Data;
+using HotelAPI.Middleware;
 using HotelAPI.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -27,7 +30,6 @@ builder.Services.AddIdentityCore<ApiUser>()
     .AddDefaultTokenProviders();
 
 
-
 //Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -46,10 +48,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//Caching
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024;         //allow up to 1Mb data
+    options.UseCaseSensitivePaths = true;   // Hotel vs hotel, store in different location.
+
+});
 
 
-//Controllers and Swagger
-builder.Services.AddControllers();
+
+//Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -62,6 +71,29 @@ builder.Services.AddCors(options =>
         .AllowAnyOrigin()
         .AllowAnyMethod());
 });
+
+
+//Versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new QueryStringApiVersionReader("api-version"),
+        new HeaderApiVersionReader("X-Version"),
+        new MediaTypeApiVersionReader("ver")
+        );
+});
+
+builder.Services.AddVersionedApiExplorer(
+    options =>
+    {
+        options.GroupNameFormat = "'v'VVV";
+        options.SubstituteApiVersionInUrl = true;
+
+    });
+    
 
 
 //Logger
@@ -79,6 +111,13 @@ builder.Services.AddScoped<ICountriesRepository, CountriesRepository>();
 builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 
 
+//Controllers
+builder.Services.AddControllers().AddOData(options =>
+{
+    options.Select().Filter().OrderBy();
+});
+
+
 var app = builder.Build();
 
 
@@ -89,11 +128,31 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseSerilogRequestLogging();
+app.UseMiddleware<ExceptionMiddleware>();  //Global error handling
 
-app.UseHttpsRedirection();
+app.UseSerilogRequestLogging();      //Logger
 
-app.UseCors("AllowAll");
+app.UseHttpsRedirection();          //Security
+
+app.UseCors("AllowAll");            //CORS Policy
+
+app.UseResponseCaching();           //Caching
+
+app.Use(async (context, next) =>     //Caching
+{
+    //Fresh data every 10 seconds
+    context.Response.GetTypedHeaders().CacheControl =
+        new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+        {
+            Public = true,
+            MaxAge = TimeSpan.FromSeconds(10)
+        };
+    context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
+        new string[] { "Accept-Encoding" };
+
+    await next();    
+});
+
 
 app.UseAuthentication();
 

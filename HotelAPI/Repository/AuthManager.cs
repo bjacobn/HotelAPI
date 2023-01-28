@@ -19,17 +19,19 @@ namespace HotelAPI.Repository
         private readonly IMapper _mapper;
         private readonly UserManager<ApiUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthManager> _logger;
         private ApiUser _user;
 
         private const string _loginProvider = "HotelListingApi";
         private const string _refreshToken = "RefreshToken";
 
 
-        public AuthManager(IMapper mapper, UserManager<ApiUser> userManger, IConfiguration configuration)
+        public AuthManager(IMapper mapper, UserManager<ApiUser> userManger, IConfiguration configuration, ILogger<AuthManager> logger)
         {
             _mapper = mapper;
             _userManager = userManger;
             _configuration = configuration;
+            _logger = logger;
         }
 
 
@@ -56,7 +58,7 @@ namespace HotelAPI.Repository
 
         public async Task<AuthResponseDto> Login(LoginDto loginDto)
         {
-
+            _logger.LogInformation($"Looking for user email {loginDto}");
 
             //Get user with email address
             _user = await _userManager.FindByEmailAsync(loginDto.Email);
@@ -67,10 +69,17 @@ namespace HotelAPI.Repository
 
             if (_user == null || isValidUser == false)
             {
+                _logger.LogWarning($"User with email {loginDto.Email} was not found");
                 return null;
             }
 
             var token = await GenerateToken();
+
+            //Debug - Client says token not wroking
+            _logger.LogInformation($"Token generated for user with email {loginDto.Email} | Token: {token}");
+
+
+            //Client login receives both tokens
             return new AuthResponseDto
             {
                 Token = token,
@@ -85,7 +94,7 @@ namespace HotelAPI.Repository
 
         public async Task<IEnumerable<IdentityError>> Register(ApiUserDto userDto)
         {
-            //Map it
+            //Map register email
             _user = _mapper.Map<ApiUser>(userDto);
 
             //Check for same value

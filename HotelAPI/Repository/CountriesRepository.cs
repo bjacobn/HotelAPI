@@ -2,6 +2,7 @@
 using HotelAPI.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
+using AutoMapper;
 
 namespace HotelAPI.Repository
 {
@@ -9,7 +10,7 @@ namespace HotelAPI.Repository
     {
         private readonly HotelListDbContext _context;
 
-        public CountriesRepository(HotelListDbContext context) : base(context)
+        public CountriesRepository(HotelListDbContext context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
         }
